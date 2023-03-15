@@ -1,0 +1,24 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+  margin: 0 40px;
+}
+
+.title {
+  font-size: 3rem;
+  color: inherit;
+}
+
+.link {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  transition: all 0.3s ease-in-out;
+}
+
+.active {
+  background-color: var(--bg-active-link);
+}

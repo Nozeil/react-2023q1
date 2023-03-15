@@ -2,7 +2,8 @@ import { Paths } from '@/enums';
 import { withLocation, WithLocationProps } from '@/HOCs/HOCs';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { NavBar } from './NavBar';
+import { NavBar } from '../NavBar/NavBar';
+import cl from './Header.module.css';
 
 interface State {
   title: string;
@@ -24,7 +25,7 @@ class Header extends Component<WithLocationProps, State> {
   getTitle = (path: string) => {
     const titles = {
       [Paths.HOME]: 'Home',
-      [Paths.ABOUT]: 'About',
+      [Paths.ABOUT]: 'About us',
       [Paths.NOT_FOUND]: '404',
     };
 
@@ -46,20 +47,26 @@ class Header extends Component<WithLocationProps, State> {
       };
     });
 
+  generateLinkClassName = ({ isActive }: { isActive: boolean }) => {
+    return isActive ? `${cl.link} ${cl.active}` : `${cl.link}`;
+  };
+
   render() {
     return (
-      <header>
-        <h3>{this.state.title}</h3>
+      <header className={cl.header}>
+        <h3 className={cl.title}>{this.state.title}</h3>
         <NavBar
           links={this.paths.map((path) => (
-            <NavLink
-              to={path}
-              key={path}
-              onClick={this.onClickHandler}
-              style={({ isActive }) => ({ textDecoration: isActive ? 'underline' : 'none' })}
-            >
-              {this.getTitle(path)}
-            </NavLink>
+            <li key={path}>
+              <NavLink
+                to={path}
+                key={path}
+                onClick={this.onClickHandler}
+                className={this.generateLinkClassName}
+              >
+                {this.getTitle(path)}
+              </NavLink>
+            </li>
           ))}
         />
       </header>
