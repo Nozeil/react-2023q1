@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './main.css';
-import './scss/styles.scss';
-import 'bootstrap';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { createRoutesFromElements, Route } from 'react-router';
 import { Home } from './components/pages/Home';
