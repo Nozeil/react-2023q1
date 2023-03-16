@@ -18,7 +18,10 @@ body {
   background-color: var(--bg-main);
 }
 
-html, body, #root, .container {
+html,
+body,
+#root,
+.container {
   height: 100%;
 }
 
@@ -42,5 +45,9 @@ li {
 a {
   color: inherit;
   text-decoration: none;
+  cursor: pointer;
+}
+
+button {
   cursor: pointer;
 }
