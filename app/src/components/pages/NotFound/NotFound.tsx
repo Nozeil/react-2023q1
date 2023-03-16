@@ -5,7 +5,7 @@ export class NotFound extends Component {
   render() {
     return (
       <section className={cl.section}>
-        <img className={cl.img} src="/page-not-found.svg" alt="not-found" />
+        <img className={cl.img} src="/svg/page-not-found.svg" alt="not-found" />
       </section>
     );
   }

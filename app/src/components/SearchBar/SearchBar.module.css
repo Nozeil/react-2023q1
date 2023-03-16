@@ -1,6 +1,7 @@
 .search-bar {
   display: flex;
   align-items: center;
+  margin-bottom: 40px;
 }
 
 .btn {
@@ -8,7 +9,7 @@
   height: 40px;
   border: none;
   outline: none;
-  background: transparent no-repeat bottom/80% url('/search.svg');
+  background: transparent no-repeat bottom/80% url('/svg/search.svg');
 }
 
 .input {
@@ -26,5 +27,5 @@
   width: 40px;
   height: 40px;
   cursor: pointer;
-  background: transparent no-repeat center/70% url('/close.svg');
+  background: transparent no-repeat center/70% url('/svg/close.svg');
 }

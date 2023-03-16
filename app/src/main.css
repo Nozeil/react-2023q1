@@ -1,7 +1,9 @@
 :root {
-  --bg-main: #fffaf0;
+  --bg-main: #ffffff;
   --bg-active-link: #faebd7;
   --main-color: #020100;
+  --bg-card: #fafafa;
+  --shadow: #e1e2d8;
 }
 
 * {
