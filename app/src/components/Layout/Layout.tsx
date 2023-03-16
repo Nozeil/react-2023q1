@@ -1,9 +1,9 @@
 import { Component } from 'react';
 import { Outlet } from 'react-router-dom';
-import { HeaderWithLocation } from './components/Header/Header';
-import cl from './App.module.css';
+import { HeaderWithLocation } from '../Header/Header';
+import cl from './Layout.module.css';
 
-export class App extends Component {
+export class Layout extends Component {
   render() {
     return (
       <div className={cl.container}>

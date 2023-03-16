@@ -1,7 +1,7 @@
 import { searchKey } from '@/constants';
 import { EmptyProps } from '@/types';
 import { ChangeEvent, Component } from 'react';
-import cl from './index.module.css';
+import cl from './SearchBar.module.css';
 
 interface State {
   value: string;

@@ -6,13 +6,13 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { createRoutesFromElements, Route } from 'react-router';
 import { Home } from './components/pages/Home';
 import { About } from './components/pages/About';
-import { NotFound } from './components/pages/NotFound';
-import { App } from './App';
+import { NotFound } from './components/pages/NotFound/NotFound';
+import { Layout } from './components/Layout/Layout';
 import { Paths } from './enums';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<App />} errorElement={<Navigate to={Paths.NOT_FOUND} />}>
+    <Route element={<Layout />} errorElement={<Navigate to={Paths.NOT_FOUND} />}>
       <Route index path={Paths.HOME} element={<Home />} />
       <Route path={Paths.ABOUT} element={<About />} />
       <Route path={Paths.NOT_FOUND} element={<NotFound />} />
