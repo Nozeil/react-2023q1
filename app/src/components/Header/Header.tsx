@@ -1,4 +1,4 @@
-import { Paths } from '@/enums';
+import { Paths, TestIds } from '@/enums';
 import { withLocation, WithLocationProps } from '@/HOCs/HOCs';
 import { Component } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -53,7 +53,7 @@ class Header extends Component<WithLocationProps, State> {
 
   render() {
     return (
-      <header className={cl.header}>
+      <header className={cl.header} data-testid={TestIds.HEADER_ID}>
         <h3 className={cl.title}>{this.state.title}</h3>
         <NavBar
           links={this.paths.map((path) => (
@@ -63,6 +63,7 @@ class Header extends Component<WithLocationProps, State> {
                 key={path}
                 onClick={this.onClickHandler}
                 className={this.generateLinkClassName}
+                data-testid={path}
               >
                 {this.getTitle(path)}
               </NavLink>

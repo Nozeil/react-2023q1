@@ -1,4 +1,5 @@
 import { searchKey } from '@/constants';
+import { TestIds } from '@/enums';
 import { EmptyProps } from '@/types';
 import { ChangeEvent, Component } from 'react';
 import cl from './SearchBar.module.css';
@@ -33,9 +34,10 @@ export class SearchBar extends Component<EmptyProps, State> {
 
   render() {
     return (
-      <div className={cl['search-bar']}>
+      <div className={cl['search-bar']} data-testid={TestIds.SEARCH_BAR_ID}>
         <button className={cl.btn} />
         <input
+          data-testid={TestIds.SEARCH_INPUT_ID}
           value={this.state.value}
           onChange={this.onChange}
           className={cl.input}
