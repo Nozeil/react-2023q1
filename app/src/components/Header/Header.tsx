@@ -9,12 +9,29 @@ interface State {
   title: string;
 }
 
+const getTitle = (path: string) => {
+  const titles = {
+    [Paths.HOME]: 'Home',
+    [Paths.ABOUT]: 'About us',
+    [Paths.NOT_FOUND]: '404',
+  };
+
+  switch (path) {
+    case Paths.HOME:
+      return titles[Paths.HOME];
+    case Paths.ABOUT:
+      return titles[Paths.ABOUT];
+    default:
+      return titles[Paths.NOT_FOUND];
+  }
+};
+
 class Header extends Component<WithLocationProps, State> {
   paths: Paths[];
 
   constructor(props: WithLocationProps) {
     super(props);
-    this.state = { title: this.getTitle(this.props.location.pathname) };
+    this.state = { title: getTitle(this.props.location.pathname) };
     this.paths = [Paths.HOME, Paths.ABOUT];
   }
 
@@ -22,28 +39,11 @@ class Header extends Component<WithLocationProps, State> {
     return !(this.state.title === nextState.title);
   }
 
-  getTitle = (path: string) => {
-    const titles = {
-      [Paths.HOME]: 'Home',
-      [Paths.ABOUT]: 'About us',
-      [Paths.NOT_FOUND]: '404',
-    };
-
-    switch (path) {
-      case Paths.HOME:
-        return titles[Paths.HOME];
-      case Paths.ABOUT:
-        return titles[Paths.ABOUT];
-      default:
-        return titles[Paths.NOT_FOUND];
-    }
-  };
-
   onClickHandler = () =>
     this.setState((_, prevProps) => {
       const path = prevProps.location.pathname;
       return {
-        title: this.getTitle(path),
+        title: getTitle(path),
       };
     });
 
@@ -65,7 +65,7 @@ class Header extends Component<WithLocationProps, State> {
                 className={this.generateLinkClassName}
                 data-testid={path}
               >
-                {this.getTitle(path)}
+                {getTitle(path)}
               </NavLink>
             </li>
           ))}
