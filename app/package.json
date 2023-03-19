@@ -10,7 +10,7 @@
     "prepare": "cd .. && husky install app/.husky",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "lint": "eslint src/**"
+    "lint": "eslint --ext .tsx,ts ."
   },
   "dependencies": {
     "@remix-run/web-fetch": "^4.3.2",
