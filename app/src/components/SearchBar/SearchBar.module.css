@@ -1,0 +1,31 @@
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  outline: none;
+  background: transparent no-repeat bottom/80% url('/svg/search.svg');
+}
+
+.input {
+  width: 300px;
+  height: 40px;
+  border: none;
+  border-bottom: 3px solid var(--dark-s);
+  outline: none;
+  font-size: 2rem;
+  background-color: transparent;
+}
+
+.input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  background: transparent no-repeat center/70% url('/svg/close.svg');
+}
