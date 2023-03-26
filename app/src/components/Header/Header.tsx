@@ -13,6 +13,7 @@ const getTitle = (path: string) => {
   const titles = {
     [Paths.HOME]: 'Home',
     [Paths.ABOUT]: 'About us',
+    [Paths.FORM]: 'Form',
     [Paths.NOT_FOUND]: '404',
   };
 
@@ -21,6 +22,8 @@ const getTitle = (path: string) => {
       return titles[Paths.HOME];
     case Paths.ABOUT:
       return titles[Paths.ABOUT];
+    case Paths.FORM:
+      return titles[Paths.FORM];
     default:
       return titles[Paths.NOT_FOUND];
   }
@@ -32,7 +35,7 @@ class Header extends Component<WithLocationProps, State> {
   constructor(props: WithLocationProps) {
     super(props);
     this.state = { title: getTitle(this.props.location.pathname) };
-    this.paths = [Paths.HOME, Paths.ABOUT];
+    this.paths = [Paths.HOME, Paths.ABOUT, Paths.FORM];
   }
 
   shouldComponentUpdate(_: WithLocationProps, nextState: Readonly<State>) {

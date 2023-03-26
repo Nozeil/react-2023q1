@@ -3,7 +3,7 @@
   justify-content: space-evenly;
   gap: 50px;
   border-radius: 10px;
-  background-color: var(--bg-card);
+  background-color: var(--light-m);
   box-shadow: var(--shadow) 0 0 10px;
 }
 

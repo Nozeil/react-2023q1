@@ -1,9 +1,10 @@
 :root {
-  --bg-main: #ffffff;
-  --bg-active-link: #faebd7;
-  --main-color: #020100;
-  --bg-card: #fafafa;
+  --dark-s: #020100;
+  --light-l: #faebd7;
+  --light-m: #fafafa;
+  --light-s: #ffffff;
   --shadow: #e1e2d8;
+  --error: #ff0000;
 }
 
 * {
@@ -16,8 +17,8 @@ html {
 
 body {
   font-family: 'Raleway', sans-serif;
-  color: var(--main-color);
-  background-color: var(--bg-main);
+  color: var(--dark-s);
+  background-color: var(--light-s);
 }
 
 html,
