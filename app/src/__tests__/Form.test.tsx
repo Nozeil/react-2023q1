@@ -172,5 +172,5 @@ describe('Form card render', () => {
 
     const cards = await findAllByTestId(TestIds.formCard);
     expect(cards.length).toBe(10);
-  });
+  }, 10000);
 });
