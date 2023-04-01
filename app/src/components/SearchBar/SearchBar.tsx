@@ -1,53 +1,36 @@
 import { searchKey } from '@/constants';
 import { TestIds } from '@/enums';
-import { EmptyProps } from '@/types';
-import { ChangeEvent, Component } from 'react';
+import { ChangeEvent, useCallback, useEffect, useRef } from 'react';
+import { useBeforeUnload } from 'react-router-dom';
 import cl from './SearchBar.module.css';
 
-interface State {
-  value: string;
-}
+export function SearchBar() {
+  const search = useRef<string>(localStorage.getItem(searchKey) || '');
 
-export class SearchBar extends Component<EmptyProps, State> {
-  constructor(props: EmptyProps) {
-    super(props);
-    this.state = { value: localStorage.getItem(searchKey) || '' };
-  }
+  const saveSearchValueToLS = useCallback(() => {
+    localStorage.setItem(searchKey, search.current);
+  }, []);
 
-  componentDidMount() {
-    window.addEventListener('beforeunload', this.saveSearchValueToLS);
-  }
+  useBeforeUnload(saveSearchValueToLS);
 
-  componentWillUnmount() {
-    this.saveSearchValueToLS();
-    window.removeEventListener('beforeunload', this.saveSearchValueToLS);
-  }
+  useEffect(() => () => saveSearchValueToLS(), [saveSearchValueToLS]);
 
-  saveSearchValueToLS = () => {
-    localStorage.setItem(searchKey, this.state.value);
-  };
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => (search.current = e.target.value);
 
-  onChange = (e: ChangeEvent<HTMLInputElement>) =>
-    this.setState({
-      value: e.target.value,
-    });
-
-  render() {
-    return (
-      <div className={cl['search-bar']} data-testid={TestIds.SEARCH_BAR_ID}>
-        <button className={cl.btn} />
-        <input
-          data-testid={TestIds.SEARCH_INPUT_ID}
-          value={this.state.value}
-          onChange={this.onChange}
-          className={cl.input}
-          type="search"
-          name="search-bar"
-          id="search-bar"
-          placeholder="Search..."
-          autoComplete="off"
-        />
-      </div>
-    );
-  }
+  return (
+    <div className={cl['search-bar']} data-testid={TestIds.SEARCH_BAR_ID}>
+      <button className={cl.btn} />
+      <input
+        data-testid={TestIds.SEARCH_INPUT_ID}
+        defaultValue={search.current}
+        onChange={onChange}
+        className={cl.input}
+        type="search"
+        name="search-bar"
+        id="search-bar"
+        placeholder="Search..."
+        autoComplete="off"
+      />
+    </div>
+  );
 }
