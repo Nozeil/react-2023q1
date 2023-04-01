@@ -1,297 +1,177 @@
-import { ChangeEvent, Component, createRef, RefObject } from 'react';
-import { FormStateI, CurrentInputI, CurrentSelectI } from './Form.types';
+import { useEffect, useState } from 'react';
+import { FormCardI, FormCardsData, FormValuesI } from './Form.types';
 import cl from './Form.module.css';
 import FormCardList from './FormCardList/FormCardList';
 import FormInput from './FormInput/FormInput';
 import FormSelect from './FormSelect/FormSelect';
-import FormSwitcher from './FormSwitcher/FormSwitcher';
+import FormGenderSwitcher from './FormGenderSwitcher/FormGenderSwitcher';
 import FormFile from './FormFile/FormFile';
 import FormSubmit from './FormSubmit/FormSubmit';
 import FormSuccessMessage from './FormSuccessMessage/FormSuccessMessage';
 import {
   Countries,
-  ErrorKeys,
   ErrorMessages,
   Gendors,
   InputNames,
   InputTypes,
   LabelTexts,
-  TestIds,
 } from './Form.enums';
-import React from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { TestIds } from './Form.enums';
+import differenceInYears from 'date-fns/differenceInYears';
 
-class Form extends Component<Record<string, never>, FormStateI> {
-  name: RefObject<HTMLInputElement>;
-  surname: RefObject<HTMLInputElement>;
-  date: RefObject<HTMLInputElement>;
-  country: RefObject<HTMLSelectElement>;
-  consent: RefObject<HTMLInputElement>;
-  gender: RefObject<HTMLInputElement>;
-  image: RefObject<HTMLInputElement>;
+const Form = () => {
+  const [message, setMessageVisibility] = useState<boolean>(false);
+  const [data, setData] = useState<FormCardsData>([]);
 
-  constructor(props: Record<string, never>) {
-    super(props);
-    this.state = {
-      data: [],
-      isSuccessMessage: false,
-      canSubmit: false,
-      errors: {
-        name: '',
-        surname: '',
-        date: '',
-        country: '',
-        consent: '',
-        image: '',
-      },
-    };
-    this.name = createRef<HTMLInputElement>();
-    this.surname = createRef<HTMLInputElement>();
-    this.date = createRef<HTMLInputElement>();
-    this.country = createRef<HTMLSelectElement>();
-    this.consent = createRef<HTMLInputElement>();
-    this.gender = createRef<HTMLInputElement>();
-    this.image = createRef<HTMLInputElement>();
-  }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitSuccessful, isDirty },
+    reset,
+  } = useForm<FormValuesI>({
+    defaultValues: {
+      name: '',
+      surname: '',
+      date: '',
+      consent: '',
+      country: Countries.default,
+      gender: '',
+      image: '',
+    },
+  });
 
-  setError = (key: string, value: string) => {
-    this.setState((prevState) => ({
-      errors: {
-        ...prevState.errors,
-        [key]: value,
-      },
-    }));
-  };
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
 
-  validateByValueLength = (
-    { current: input }: CurrentInputI,
-    errorKey: ErrorKeys.name | ErrorKeys.surname,
-    length = 2
-  ) => {
-    const isValid = input && input.value.length > length;
-    isValid
-      ? this.setError(errorKey, ``)
-      : this.setError(errorKey, `${errorKey} ${ErrorMessages.lengthError} ${length}`);
-    return isValid;
-  };
-
-  validateDate = ({ current: date }: CurrentInputI, errorKey: string) => {
-    if (date) {
-      const bDay = date.valueAsDate;
-
-      if (bDay) {
-        const currDate = new Date();
-        const minAge = 16;
-        let age = currDate.getFullYear() - bDay.getFullYear();
-        const isValid = age > minAge;
-
-        const [currMonth, currDay, month, day] = [
-          currDate.getMonth(),
-          currDate.getDate(),
-          bDay.getMonth(),
-          bDay.getDate(),
-        ];
-
-        if (currMonth < month) {
-          age -= 1;
-        } else if (currMonth === month) {
-          if (currDay > day) {
-            age -= 1;
-          }
-        }
-
-        if (isValid) {
-          this.setError(errorKey, '');
-        } else {
-          this.setError(errorKey, ErrorMessages.wrongDate);
-        }
-
-        return isValid;
-      } else {
-        this.setError(errorKey, ErrorMessages.emptyDate);
-        return false;
+  const onSubmit: SubmitHandler<FormValuesI> = (data) => {
+    const { name, surname, date, country, gender, image: fileList } = data;
+    if (fileList) {
+      const file = fileList.item(0);
+      if (file) {
+        const cardsData: FormCardI = {
+          data: {
+            name,
+            surname,
+            date,
+            country,
+            gender: gender ? Gendors.female : Gendors.male,
+            file,
+          },
+          id: Date.now(),
+        };
+        setMessageVisibility(true);
+        setData((prevData) => [...prevData, cardsData]);
       }
     }
   };
 
-  validateCountry = ({ current: country }: CurrentSelectI, errorKey: string) => {
-    const isValid = country && country.value !== Countries.default;
-    isValid ? this.setError(errorKey, '') : this.setError(errorKey, ErrorMessages.country);
-    return isValid;
+  const validateDate = (date: string) => {
+    const [bDay, currDate, minAge] = [new Date(date), new Date(), 16];
+    return differenceInYears(currDate, bDay) >= minAge;
   };
 
-  validateConsent = ({ current: consent }: CurrentInputI, errorKey: string) => {
-    const isValid = consent && consent.checked;
-    isValid ? this.setError(errorKey, '') : this.setError(errorKey, ErrorMessages.consent);
-    return isValid;
+  const validateCountry = (country: string) => country !== Countries.default;
+
+  const onTransitionEnd = () => setMessageVisibility(false);
+
+  const areErrorsEmpty = () => {
+    return !Object.values(errors).some((error) => error);
   };
 
-  validateImage = ({ current: image }: CurrentInputI, errorKey: string) => {
-    const isValid = image && image.files && !!image.files.length;
-    isValid ? this.setError(errorKey, '') : this.setError(errorKey, ErrorMessages.image);
-    return isValid;
-  };
+  const canSubmit = () => isDirty && areErrorsEmpty();
 
-  validate = () => [
-    this.validateByValueLength(this.name, ErrorKeys.name),
-    this.validateByValueLength(this.surname, ErrorKeys.surname),
-    this.validateDate(this.date, ErrorKeys.date),
-    this.validateCountry(this.country, ErrorKeys.country),
-    this.validateConsent(this.consent, ErrorKeys.consent),
-    this.validateImage(this.image, ErrorKeys.image),
-  ];
+  return (
+    <>
+      <form
+        className={cl.form}
+        noValidate={true}
+        onSubmit={handleSubmit(onSubmit)}
+        data-testid={TestIds.form}
+      >
+        <FormInput
+          cl={cl}
+          errorMessage={errors.name?.message || ''}
+          labelText={LabelTexts.name}
+          labelDirection={cl.columnLabel}
+          inputType={InputTypes.text}
+          {...register(InputNames.name, {
+            required: `name ${ErrorMessages.lengthError} 2`,
+            minLength: {
+              value: 3,
+              message: `name ${ErrorMessages.lengthError} 2`,
+            },
+          })}
+        />
 
-  resetForm(
-    name: HTMLInputElement,
-    surname: HTMLInputElement,
-    date: HTMLInputElement,
-    country: HTMLSelectElement,
-    consent: HTMLInputElement,
-    gender: HTMLInputElement,
-    fileList: HTMLInputElement
-  ) {
-    name.value = '';
-    surname.value = '';
-    date.value = '';
-    country.value = Countries.default;
-    consent.checked = false;
-    gender.checked = false;
-    fileList.value = '';
-  }
+        <FormInput
+          cl={cl}
+          errorMessage={errors.surname?.message || ''}
+          labelText={LabelTexts.surname}
+          labelDirection={cl.columnLabel}
+          inputType={InputTypes.text}
+          {...register(InputNames.surname, {
+            required: `surname ${ErrorMessages.lengthError} 2`,
+            minLength: {
+              value: 3,
+              message: `surname ${ErrorMessages.lengthError} 2`,
+            },
+          })}
+        />
 
-  onClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    this.setState(() => ({ canSubmit: false }));
-    const isValid = !this.validate().some((valid) => !valid);
+        <FormInput
+          cl={cl}
+          errorMessage={errors.date?.message || ''}
+          labelText={LabelTexts.date}
+          labelDirection={cl.columnLabel}
+          inputType={InputTypes.date}
+          {...register(InputNames.date, {
+            required: ErrorMessages.emptyDate,
+            validate: {
+              overTheAgeOfFifteen: (date) => validateDate(date) || ErrorMessages.wrongDate,
+            },
+          })}
+        />
 
-    if (isValid) {
-      const [name, surname, date, country, consent, gender, fileList] = [
-        this.name.current,
-        this.surname.current,
-        this.date.current,
-        this.country.current,
-        this.consent.current,
-        this.gender.current,
-        this.image.current,
-      ];
+        <FormSelect
+          cl={cl}
+          errorMessage={errors.country?.message || ''}
+          {...register(InputNames.country, {
+            validate: (country) => validateCountry(country) || ErrorMessages.country,
+          })}
+        />
 
-      if (name && surname && date && country && consent && gender && fileList && fileList.files) {
-        const file = fileList.files['0'];
-        this.setState((prevState) => {
-          const state = {
-            isSuccessMessage: true,
-            data: [
-              ...prevState.data,
-              {
-                data: {
-                  name: name.value,
-                  surname: surname.value,
-                  date: date.value,
-                  country: country.value,
-                  gender: gender.checked ? Gendors.female : Gendors.male,
-                  file,
-                },
-                id: Date.now(),
-              },
-            ],
-          };
-          this.resetForm(name, surname, date, country, consent, gender, fileList);
-          return state;
-        });
-      }
-    }
-  };
+        <FormInput
+          cl={cl}
+          errorMessage={errors.consent?.message || ''}
+          labelText={LabelTexts.consent}
+          labelDirection={cl.rowLabel}
+          inputType={InputTypes.checkbox}
+          {...register(InputNames.consent, {
+            required: ErrorMessages.consent,
+          })}
+        />
 
-  areErrorsEmpty = () => {
-    return !Object.values(this.state.errors).some((error) => error);
-  };
+        <FormGenderSwitcher cl={cl} {...register(InputNames.gender)} />
 
-  onChange = (e: ChangeEvent<HTMLFormElement>) => {
-    const [key, canSubmit] = [e.target.name, !this.state.canSubmit];
+        <FormFile
+          cl={cl}
+          errorMessage={errors.image?.message || ''}
+          {...register(InputNames.image, {
+            required: ErrorMessages.image,
+          })}
+        />
 
-    if (this.state.errors[key]) {
-      this.setError(key, '');
-    }
+        <FormSubmit cl={cl} canSubmit={canSubmit()} />
 
-    if (canSubmit) {
-      this.setState(() => ({ canSubmit }));
-    }
-  };
+        <FormSuccessMessage isSuccessMessage={message} cl={cl} onTransitionEnd={onTransitionEnd} />
+      </form>
 
-  onTransitionEnd = () => this.setState(() => ({ isSuccessMessage: false }));
-
-  render() {
-    const {
-      name: nameError,
-      surname: surnameError,
-      date: dateError,
-      country: countryError,
-      consent: consentError,
-      image: imageError,
-    } = this.state.errors;
-
-    const canSubmit = this.state.canSubmit && this.areErrorsEmpty();
-
-    return (
-      <>
-        <form className={cl.form} onChange={this.onChange} data-testid={TestIds.form}>
-          <FormInput
-            ref={this.name}
-            cl={cl}
-            errorMessage={nameError}
-            labelText={LabelTexts.name}
-            labelDirection={cl.columnLabel}
-            inputType={InputTypes.text}
-            inputName={InputNames.name}
-          />
-
-          <FormInput
-            ref={this.surname}
-            cl={cl}
-            errorMessage={surnameError}
-            labelText={LabelTexts.surname}
-            labelDirection={cl.columnLabel}
-            inputType={InputTypes.text}
-            inputName={InputNames.surname}
-          />
-
-          <FormInput
-            ref={this.date}
-            cl={cl}
-            errorMessage={dateError}
-            labelText={LabelTexts.date}
-            labelDirection={cl.columnLabel}
-            inputType={InputTypes.date}
-            inputName={InputNames.date}
-          />
-
-          <FormSelect ref={this.country} cl={cl} errorMessage={countryError} />
-
-          <FormInput
-            ref={this.consent}
-            cl={cl}
-            errorMessage={consentError}
-            labelText={LabelTexts.consent}
-            labelDirection={cl.rowLabel}
-            inputType={InputTypes.checkbox}
-            inputName={InputNames.consent}
-          />
-
-          <FormSwitcher ref={this.gender} cl={cl} />
-
-          <FormFile ref={this.image} cl={cl} errorMessage={imageError} />
-
-          <FormSubmit cl={cl} canSubmit={canSubmit} onClick={this.onClick} />
-
-          <FormSuccessMessage
-            isSuccessMessage={this.state.isSuccessMessage}
-            cl={cl}
-            onTransitionEnd={this.onTransitionEnd}
-          />
-        </form>
-        <FormCardList cards={this.state.data} />
-      </>
-    );
-  }
-}
-
+      <FormCardList cards={data} />
+    </>
+  );
+};
 export default Form;
