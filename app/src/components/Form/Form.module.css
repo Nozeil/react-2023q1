@@ -103,3 +103,24 @@
   background-color: var(--dark-s);
   cursor: pointer;
 }
+
+.card {
+  max-width: 220px;
+  background-color: var(--light-m);
+  border-radius: 10px;
+  text-align: center;
+  padding: 10px;
+}
+
+.cardImage {
+  border-radius: 10px;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 10px;
+}
+
+.cardListItem {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
