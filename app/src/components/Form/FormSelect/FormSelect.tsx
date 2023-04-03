@@ -1,15 +1,16 @@
-import { Component, forwardRef } from 'react';
-import { Countries, InputNames, TestIds } from '../Form.enums';
-import { FormSelectPropsI, FormSelectForwardRefPropsI } from './FormSelect.interfaces';
+import { Countries } from '../Form.enums';
+import { FormSelectProps } from './FormSelect.types';
+import { TestIds } from './../Form.enums';
+import { forwardRef } from 'react';
 
-class FormSelect extends Component<FormSelectPropsI> {
-  render() {
-    const { innerRef: ref, cl, errorMessage } = this.props;
+const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
+  ({ cl, errorMessage, name, onChange }, ref) => {
     return (
       <label className={`${cl.columnLabel} ${errorMessage && cl.errorField}`}>
         Country
         <select
-          name={InputNames.country}
+          name={name}
+          onChange={onChange}
           ref={ref}
           defaultValue={Countries.default}
           className={cl.field}
@@ -33,8 +34,6 @@ class FormSelect extends Component<FormSelectPropsI> {
       </label>
     );
   }
-}
+);
 
-export default forwardRef<HTMLSelectElement, FormSelectForwardRefPropsI>((props, ref) => (
-  <FormSelect innerRef={ref} {...props} />
-));
+export default FormSelect;
