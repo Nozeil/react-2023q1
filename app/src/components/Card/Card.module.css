@@ -1,45 +1,44 @@
 .item {
   display: flex;
-  justify-content: space-evenly;
-  gap: 50px;
-  border-radius: 10px;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
   background-color: var(--light-m);
   box-shadow: var(--shadow) 0 0 10px;
+  cursor: pointer;
+  transition: 0.3s all ease-in-out;
 }
 
-.item:nth-child(odd) {
-  flex-direction: row-reverse;
-  justify-content: space-between;
-}
-
-.item:nth-child(even) .img {
-  transform: rotateY(180deg);
+.item:hover {
+  background-color: var(--light-l);
 }
 
 .content {
   display: flex;
   flex-direction: column;
-  padding: 40px 20px 20px 40px;
+  padding: 0 20px;
 }
 
 .title {
-  font-size: 2.8rem;
-}
-
-.subtitle {
-  font-weight: 400;
-}
-
-.subtitle,
-.price,
-.about {
   font-size: 2rem;
 }
 
+.subtitle {
+  font-size: 1.8rem;
+  font-weight: 400;
+}
+
+.img-wrapper {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+
 .img {
+  align-self: center;
   width: 50%;
+  max-width: 150px;
   height: auto;
-  max-width: 570px;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+  max-height: 200px;
 }

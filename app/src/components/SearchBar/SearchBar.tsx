@@ -1,10 +1,14 @@
 import { searchKey } from '@/constants';
 import { TestIds } from '@/enums';
-import { ChangeEvent, useCallback, useEffect, useRef } from 'react';
+import { ChangeEvent, useCallback, useEffect, useRef, KeyboardEvent } from 'react';
 import { useBeforeUnload } from 'react-router-dom';
 import cl from './SearchBar.module.css';
 
-export function SearchBar() {
+interface Props {
+  onKeyUp: (e: KeyboardEvent<HTMLInputElement>) => void;
+}
+
+export function SearchBar({ onKeyUp }: Props) {
   const search = useRef<string>(localStorage.getItem(searchKey) || '');
 
   const saveSearchValueToLS = useCallback(() => {
@@ -23,6 +27,7 @@ export function SearchBar() {
       <input
         data-testid={TestIds.SEARCH_INPUT_ID}
         defaultValue={search.current}
+        onKeyUp={onKeyUp}
         onChange={onChange}
         className={cl.input}
         type="search"
