@@ -4,3 +4,7 @@
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
 }
+
+.error {
+  font-size: 1.8rem;
+}

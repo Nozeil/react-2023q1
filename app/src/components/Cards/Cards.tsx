@@ -4,6 +4,7 @@ import { TestIds } from '@/enums';
 import { useSearchBookQuery } from '@/hooks/useSearchBookQuery';
 import { SearchResponse } from '@/models';
 import { ImageLinks } from '@/types';
+import { Loader } from '../Loader';
 
 interface Props {
   search: string;
@@ -48,14 +49,20 @@ export function Cards({ search }: Props) {
 
   let content;
 
-  if (books) {
+  if (isLoading) {
+    content = <Loader />;
+  } else if (books) {
     const mappedBooks = mapBooksItems(books);
-    content = mappedBooks.map((book) => <Card key={book.id} {...book} />);
+    content = (
+      <ul className={cl.list} data-testid={TestIds.CARDS_LIST_ID}>
+        {mappedBooks.map((book) => (
+          <Card key={book.id} {...book} />
+        ))}
+      </ul>
+    );
+  } else if (isError) {
+    content = <div className={cl.error}>Oops... something went wrong</div>;
   }
 
-  return (
-    <ul className={cl.list} data-testid={TestIds.CARDS_LIST_ID}>
-      {content}
-    </ul>
-  );
+  return content || null;
 }

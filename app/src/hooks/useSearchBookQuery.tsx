@@ -4,11 +4,12 @@ import { useCallback, useEffect, useState } from 'react';
 
 export function useSearchBookQuery(search: string) {
   const [data, setData] = useState<SearchResponse>();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
 
   const searchBooks = useCallback(async () => {
     try {
+      setIsLoading(true);
       const res = await api.searchBook(search);
       setIsLoading(false);
       setData(res);
