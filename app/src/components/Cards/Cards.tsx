@@ -52,16 +52,21 @@ export function Cards({ search }: Props) {
   if (isLoading) {
     content = <Loader />;
   } else if (books) {
+    if (!('items' in books)) {
+      return <div className={cl.message}>Please enable VPN</div>;
+    }
     const mappedBooks = mapBooksItems(books);
-    content = (
+    content = mappedBooks.length ? (
       <ul className={cl.list} data-testid={TestIds.CARDS_LIST_ID}>
         {mappedBooks.map((book) => (
           <Card key={book.id} {...book} />
         ))}
       </ul>
+    ) : (
+      <div className={cl.message}>Nothing found</div>
     );
   } else if (isError) {
-    content = <div className={cl.error}>Oops... something went wrong</div>;
+    content = <div className={cl.message}>Oops... something went wrong</div>;
   }
 
   return content || null;

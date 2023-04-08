@@ -8,7 +8,6 @@ const client = axios.create({
 });
 
 const searchBook = async (q: string) => {
-  console.log(q);
   const resp = await client<SearchResponse>('volumes', {
     params: {
       q,
