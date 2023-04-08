@@ -12,9 +12,11 @@ export function Home() {
     }
   }, []);
 
+  const setSearchOnLoad = (search: string) => setSearch(search);
+
   return (
     <section data-testid={TestIds.HOME_ID}>
-      <SearchBar onKeyUp={onKeyUp} />
+      <SearchBar onKeyUp={onKeyUp} setSearchOnLoad={setSearchOnLoad} />
       <Cards search={search} />
     </section>
   );

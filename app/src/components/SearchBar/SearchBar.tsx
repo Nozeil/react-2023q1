@@ -6,9 +6,10 @@ import cl from './SearchBar.module.css';
 
 interface Props {
   onKeyUp: (e: KeyboardEvent<HTMLInputElement>) => void;
+  setSearchOnLoad: (search: string) => void;
 }
 
-export function SearchBar({ onKeyUp }: Props) {
+export function SearchBar({ onKeyUp, setSearchOnLoad }: Props) {
   const search = useRef<string>(localStorage.getItem(searchKey) || '');
 
   const saveSearchValueToLS = useCallback(() => {
@@ -18,6 +19,12 @@ export function SearchBar({ onKeyUp }: Props) {
   useBeforeUnload(saveSearchValueToLS);
 
   useEffect(() => () => saveSearchValueToLS(), [saveSearchValueToLS]);
+
+  useEffect(() => {
+    if (search.current) {
+      setSearchOnLoad(search.current);
+    }
+  }, [setSearchOnLoad]);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => (search.current = e.target.value);
 
