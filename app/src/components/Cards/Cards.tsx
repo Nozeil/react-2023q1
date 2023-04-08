@@ -1,5 +1,4 @@
 import { Card } from '../Card/Card';
-import { data } from '@/__mocks__/cardsData/cardsData';
 import cl from './Cards.module.css';
 import { TestIds } from '@/enums';
 import { useSearchBookQuery } from '@/hooks/useSearchBookQuery';
@@ -38,6 +37,7 @@ function mapBooksItems(books: SearchResponse) {
           publisher: volumeInfo?.publisher || '',
           publishDate: volumeInfo?.publishedDate || '',
           imageLinks: newImageLinks,
+          description: volumeInfo?.description || '',
         };
       })
     : [];
@@ -45,20 +45,12 @@ function mapBooksItems(books: SearchResponse) {
 
 export function Cards({ search }: Props) {
   const { data: books, isLoading, isError } = useSearchBookQuery(search);
-  console.log(books, isLoading, isError);
 
   let content;
 
   if (books) {
     const mappedBooks = mapBooksItems(books);
-    content = mappedBooks.map((book) => (
-      <Card
-        key={book.id}
-        src={book.imageLinks.thumbnail}
-        title={book.title}
-        subtitle={book.subtitle}
-      />
-    ));
+    content = mappedBooks.map((book) => <Card key={book.id} {...book} />);
   }
 
   return (

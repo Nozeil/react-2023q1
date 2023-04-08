@@ -1,0 +1,61 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.modal-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  max-width: 80%;
+  transform: translate(-50%, -50%);
+  z-index: 99;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 30px;
+  max-height: 80vh;
+  background-color: var(--light-m);
+  overflow-y: auto;
+}
+
+.title {
+  font-size: 2rem;
+}
+
+.subtitle {
+  font-size: 1.8rem;
+  font-weight: 400;
+}
+
+.paragraph {
+  font-size: 1.6rem;
+}
+
+.overlay {
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  opacity: 0.8;
+  cursor: pointer;
+  z-index: 0;
+}
+
+.button {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--light-m) no-repeat center/contain url('/svg/close.svg');
+  z-index: 99;
+}
