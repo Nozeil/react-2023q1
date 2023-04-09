@@ -14,4 +14,5 @@ export enum TestIds {
   SEARCH_INPUT_ID = 'search-input',
   CARD_ID = 'card',
   CARDS_LIST_ID = 'cards-list',
+  LOADER = 'loader',
 }

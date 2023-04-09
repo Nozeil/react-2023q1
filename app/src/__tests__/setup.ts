@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 import { fetch, Request, Response } from '@remix-run/web-fetch';
+import { server } from '@/__mocks__/server';
 
 if (!globalThis.fetch) {
   // @ts-expect-error // Built-in lib.dom.d.ts expects `fetch(Request | string, ...)` but the web
@@ -11,3 +12,7 @@ if (!globalThis.fetch) {
   // @ts-expect-error //web-std/fetch Response does not currently implement Response.error()
   globalThis.Response = Response;
 }
+
+beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+afterAll(() => server.close());
+afterEach(() => server.resetHandlers());
