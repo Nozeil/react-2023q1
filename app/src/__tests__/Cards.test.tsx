@@ -1,3 +1,4 @@
+import { book } from '@/__mocks__/data/data';
 import { Cards } from '@/components/Cards/Cards';
 import { TestIds } from '@/enums';
 import { api } from '@/services/api';
@@ -12,16 +13,15 @@ describe('cards', () => {
 
     expect(searchBookSpy).toBeCalled();
   });
-  it('should render cards list with one card', async () => {
-    const { getByTestId, findByTestId, findAllByTestId } = render(
-      <Cards search={'harry potter'} />
-    );
+  it('should render cards list with one card with mock data', async () => {
+    const { title, subtitle } = book.volumeInfo;
+    const { getByTestId, getAllByTestId, getByText } = render(<Cards search={'harry potter'} />);
     const loader = getByTestId(LOADER);
     await waitForElementToBeRemoved(loader);
-    const cardList = await findByTestId(CARDS_LIST_ID);
-    const card = await findAllByTestId(CARD_ID);
 
-    expect(cardList).toBeInTheDocument();
-    expect(card.length).toBe(1);
+    expect(getByTestId(CARDS_LIST_ID)).toBeInTheDocument();
+    expect(getAllByTestId(CARD_ID).length).toBe(1);
+    expect(getByText(title)).toBeInTheDocument();
+    expect(getByText(subtitle)).toBeInTheDocument();
   });
 });
