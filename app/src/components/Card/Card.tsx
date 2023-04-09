@@ -2,31 +2,33 @@ import { TestIds } from '@/enums';
 import cl from './Card.module.css';
 import { createPortal } from 'react-dom';
 import { Modal } from '../Modal/Modal';
-import { Book } from '@/types';
+import { BookImageLinks } from '@/types';
 import { useState } from 'react';
+import { BookThumbnail } from '../BookThumbnail';
 
-export function Card(book: Book) {
-  const { title, subtitle, imageLinks } = book;
+interface Props {
+  id: string;
+  title: string;
+  subtitle: string;
+  imageLinks: BookImageLinks;
+}
+
+export function Card({ id, title, subtitle, imageLinks }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
-  const image = <img className={cl.img} src={imageLinks.thumbnail} alt={`${title}-image`} />;
-
   const modal = isOpen
-    ? createPortal(
-        <Modal {...book} closeModal={closeModal}>
-          {image}
-        </Modal>,
-        document.body
-      )
+    ? createPortal(<Modal id={id} closeModal={closeModal} />, document.body)
     : null;
 
   return (
     <>
       <li className={cl.item} data-testid={TestIds.CARD_ID} onClick={openModal}>
-        <div className={cl['img-wrapper']}>{image}</div>
+        <div className={cl['img-wrapper']}>
+          <BookThumbnail src={imageLinks.thumbnail} title={title} />
+        </div>
         <div className={cl.content}>
           <h3 className={cl.title}>{title}</h3>
           <h4 className={cl.subtitle}>{subtitle}</h4>

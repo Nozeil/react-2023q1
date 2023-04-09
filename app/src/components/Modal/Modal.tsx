@@ -1,26 +1,30 @@
-import { PropsWithChildren } from 'react';
 import cl from './Modal.module.css';
-import { Book } from '@/types';
+import { useGetSpecificBookQuery } from '@/hooks/useGetSpecificBookQuery';
+import { Loader } from '../Loader';
+import { adaptBook } from '@/utils';
+import { BookThumbnail } from '../BookThumbnail';
+import { ErrorMessage } from '../Messages/Error';
 
-interface Props extends Book {
+interface Props {
+  id: string;
   closeModal: () => void;
 }
 
-export function Modal({
-  title,
-  subtitle,
-  authors,
-  publishDate,
-  publisher,
-  description,
-  closeModal,
-  children: image,
-}: PropsWithChildren<Props>) {
-  return (
-    <div className={cl.modal}>
-      <div className={cl['modal-wrapper']}>
+export function Modal({ id, closeModal }: Props) {
+  const { data: book, isLoading, isError } = useGetSpecificBookQuery(id);
+
+  let content;
+
+  if (isLoading) {
+    content = <Loader />;
+  } else if (book) {
+    const adaptedBook = adaptBook(book);
+    const { title, subtitle, authors, publishDate, publisher, description, imageLinks } =
+      adaptedBook;
+    content = (
+      <>
         <div className={cl['content-wrapper']}>
-          {image}
+          <BookThumbnail src={imageLinks.thumbnail} title={title} />
           <div className={cl.content}>
             <h5 className={cl.title}>{title}</h5>
             <h6 className={cl.subtitle}>{subtitle}</h6>
@@ -31,6 +35,17 @@ export function Modal({
             <p className={cl.paragraph}>{description}</p>
           </div>
         </div>
+        <button className={cl.button} onClick={closeModal} />
+      </>
+    );
+  } else if (isError) {
+    content = <ErrorMessage />;
+  }
+
+  return (
+    <div className={cl.modal}>
+      <div className={cl['modal-wrapper']}>
+        {content}
         <button className={cl.button} onClick={closeModal} />
       </div>
       <div className={cl.overlay} onClick={closeModal} />

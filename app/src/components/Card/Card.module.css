@@ -34,11 +34,3 @@
   justify-content: center;
   height: 100%;
 }
-
-.img {
-  align-self: center;
-  width: 50%;
-  max-width: 150px;
-  height: auto;
-  max-height: 200px;
-}

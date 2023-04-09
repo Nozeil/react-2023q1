@@ -6,9 +6,9 @@ export interface SearchResponse {
   items?: BooksResponse;
 }
 
-export type BooksResponse = Book[];
+export type BooksResponse = BookResponse[];
 
-interface Book {
+export interface BookResponse {
   kind: string;
   id: string;
   etag: string;

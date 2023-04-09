@@ -1,4 +1,4 @@
-import { SearchResponse } from '@/models';
+import { BookResponse, SearchResponse } from '@/models';
 import axios from 'axios';
 
 const BASE_URL = 'https://www.googleapis.com/books/v1/';
@@ -19,4 +19,9 @@ const searchBook = async (q: string) => {
   return resp.data;
 };
 
-export const api = { searchBook };
+const getSpecificBook = async (id: string) => {
+  const resp = await client<BookResponse>(`volumes/${id}`);
+  return resp.data;
+};
+
+export const api = { searchBook, getSpecificBook };
