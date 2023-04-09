@@ -1,7 +1,11 @@
-export interface DataItem {
-  src: string;
-  title: string;
-  subtitle: string;
+interface Item {
+  id: number;
+  volumeInfo: {
+    title: string;
+    subtitle: string;
+  };
 }
 
-export type Data = DataItem[];
+export interface Data {
+  items: Item[];
+}
