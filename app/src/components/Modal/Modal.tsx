@@ -1,9 +1,9 @@
 import cl from './Modal.module.css';
-import { useGetSpecificBookQuery } from '@/hooks/useGetSpecificBookQuery';
 import { Loader } from '../Loader';
 import { adaptBook } from '@/utils';
 import { BookThumbnail } from '../BookThumbnail';
 import { ErrorMessage } from '../Messages/Error';
+import { useGetSpecificBookQuery } from '@/services/books';
 
 interface Props {
   id: string;
@@ -11,12 +11,14 @@ interface Props {
 }
 
 export function Modal({ id, closeModal }: Props) {
-  const { data: book, isLoading, isError } = useGetSpecificBookQuery(id);
+  const { data: book, isFetching, isError } = useGetSpecificBookQuery(id);
 
   let content;
 
-  if (isLoading) {
+  if (isFetching) {
     content = <Loader />;
+  } else if (isError) {
+    content = <ErrorMessage />;
   } else if (book) {
     const adaptedBook = adaptBook(book);
     const { title, subtitle, authors, publishDate, publisher, description, imageLinks } =
@@ -38,8 +40,6 @@ export function Modal({ id, closeModal }: Props) {
         <button className={cl.button} onClick={closeModal} />
       </>
     );
-  } else if (isError) {
-    content = <ErrorMessage />;
   }
 
   return (
