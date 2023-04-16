@@ -1,21 +1,15 @@
 import { book } from '@/__mocks__/data/data';
 import { Cards } from '@/components/Cards/Cards';
 import { TestIds } from '@/enums';
-import { api } from '@/services/api';
 import { render, waitForElementToBeRemoved } from '@testing-library/react';
-import { describe, vi } from 'vitest';
+import { describe } from 'vitest';
+import { wrapWithProvider } from './utils/wrapWithProvider';
 
 describe('cards', () => {
   const { CARD_ID, CARDS_LIST_ID, LOADER } = TestIds;
-  it('should make call to api', async () => {
-    const searchBookSpy = vi.spyOn(api, 'searchBook');
-    render(<Cards search={'harry potter'} />);
-
-    expect(searchBookSpy).toBeCalled();
-  });
   it('should render cards list with one card with mock data', async () => {
     const { title, subtitle } = book.volumeInfo;
-    const { getByTestId, getAllByTestId, getByText } = render(<Cards search={'harry potter'} />);
+    const { getByTestId, getAllByTestId, getByText } = render(wrapWithProvider(<Cards />));
     const loader = getByTestId(LOADER);
     await waitForElementToBeRemoved(loader);
 
