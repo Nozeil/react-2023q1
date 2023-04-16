@@ -21,7 +21,7 @@ export interface FormCardDataI {
   date: string;
   country: string;
   gender: string;
-  file: File;
+  file: string;
 }
 
 export interface FormCardI {
