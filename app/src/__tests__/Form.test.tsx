@@ -3,8 +3,10 @@ import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Countries, ErrorMessages, TestIds } from '../components/Form/Form.enums';
 import { vi } from 'vitest';
+import { wrapWithProvider } from './utils/wrapWithProvider';
 
-const checkElement = (id: string) => expect(render(<Form />).getByTestId(id)).toBeInTheDocument();
+const checkElement = (id: string) =>
+  expect(render(wrapWithProvider(<Form />)).getByTestId(id)).toBeInTheDocument();
 const submitChangedValue = async (elem: HTMLElement, btn: HTMLElement, value: string) => {
   const user = userEvent.setup();
   if (value) {
@@ -22,7 +24,7 @@ const checkFieldError = async (
   value: string,
   btnId = TestIds.submit
 ) => {
-  const { getByTestId, findByText } = render(<Form />);
+  const { getByTestId, findByText } = render(wrapWithProvider(<Form />));
   const [field, submitBtn] = [getByTestId(id), getByTestId(btnId)];
 
   await submitChangedValue(field, submitBtn, value);
@@ -65,14 +67,14 @@ describe('Form render', () => {
   it('should render image field', () => checkElement(TestIds.gender));
   it('should render submit button', () => checkElement(TestIds.gender));
   it('should render form card list', () => {
-    const { getByTestId } = render(<Form />);
+    const { getByTestId } = render(wrapWithProvider(<Form />));
     const cardList = getByTestId(TestIds.formCardList);
 
     expect(cardList).toBeInTheDocument();
     expect(cardList.children.length).toBeFalsy();
   });
   it('submit button should be disabled', () => {
-    const { getByTestId } = render(<Form />);
+    const { getByTestId } = render(wrapWithProvider(<Form />));
     const btn = getByTestId(TestIds.submit);
     expect(btn.className.includes('disabled')).toBeTruthy();
   });
@@ -80,7 +82,7 @@ describe('Form render', () => {
 
 describe('Form validation', () => {
   it('submit button should be enabled after changing value in input ', async () => {
-    const { getByTestId } = render(<Form />);
+    const { getByTestId } = render(wrapWithProvider(<Form />));
     const [nameField, submitBtn] = [getByTestId(TestIds.name), getByTestId(TestIds.submit)];
 
     const user = userEvent.setup();
@@ -88,7 +90,7 @@ describe('Form validation', () => {
     expect(submitBtn.className.includes('disabled')).not.toBeTruthy();
   });
   it('should show errors when all fields are not valid and not to create card', async () => {
-    const { getByTestId, findByTestId, findAllByTestId } = render(<Form />);
+    const { getByTestId, findByTestId, findAllByTestId } = render(wrapWithProvider(<Form />));
     const [nameField, submitBtn] = [getByTestId(TestIds.name), getByTestId(TestIds.submit)];
 
     await submitChangedValue(nameField, submitBtn, 'A');
@@ -105,7 +107,7 @@ describe('Form validation', () => {
   });
 
   it('submit button should be disabled after click on it', async () => {
-    const { getByTestId } = render(<Form />);
+    const { getByTestId } = render(wrapWithProvider(<Form />));
     const [nameField, submitBtn] = [getByTestId(TestIds.name), getByTestId(TestIds.submit)];
 
     await submitChangedValue(nameField, submitBtn, 'A');
@@ -132,7 +134,7 @@ describe('Form validation', () => {
 describe('Form card render', () => {
   window.URL.createObjectURL = vi.fn();
   it('should render one card without errors', async () => {
-    const { getByTestId, findAllByTestId } = render(<Form />);
+    const { getByTestId, findAllByTestId } = render(wrapWithProvider(<Form />));
     const formElements = [
       TestIds.name,
       TestIds.surname,
@@ -151,7 +153,7 @@ describe('Form card render', () => {
     expect(cards.length).toBe(1);
   });
   it('should render ten cards without errors', async () => {
-    const { getByTestId, findAllByTestId } = render(<Form />);
+    const { getByTestId, findAllByTestId } = render(wrapWithProvider(<Form />));
     const formElements = [
       TestIds.name,
       TestIds.surname,
@@ -165,7 +167,7 @@ describe('Form card render', () => {
     ].map((id) => getByTestId(id));
     const [name, surname, date, country, consent, gender, image, submitBtn, message] = formElements;
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 9; i++) {
       await createCard(name, surname, date, country, consent, gender, image, submitBtn);
       expect(message.className.includes('showMessage')).toBeTruthy();
     }

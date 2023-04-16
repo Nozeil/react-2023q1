@@ -1,41 +1,33 @@
-import { searchKey } from '@/constants';
 import { TestIds } from '@/enums';
-import { ChangeEvent, useCallback, useEffect, useRef, KeyboardEvent } from 'react';
-import { useBeforeUnload } from 'react-router-dom';
+import { useCallback, KeyboardEvent } from 'react';
 import cl from './SearchBar.module.css';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { selectSearch, setSearch } from '@/redux/searchSlice';
+import { useLazySearchBooksQuery } from '@/services/books';
 
-interface Props {
-  onKeyUp: (e: KeyboardEvent<HTMLInputElement>) => void;
-  setSearchOnLoad: (search: string) => void;
-}
+export function SearchBar() {
+  const search = useAppSelector(selectSearch);
+  const dispatch = useAppDispatch();
+  const [trigger] = useLazySearchBooksQuery();
 
-export function SearchBar({ onKeyUp, setSearchOnLoad }: Props) {
-  const search = useRef<string>(localStorage.getItem(searchKey) || '');
-
-  const saveSearchValueToLS = useCallback(() => {
-    localStorage.setItem(searchKey, search.current);
-  }, []);
-
-  useBeforeUnload(saveSearchValueToLS);
-
-  useEffect(() => () => saveSearchValueToLS(), [saveSearchValueToLS]);
-
-  useEffect(() => {
-    if (search.current) {
-      setSearchOnLoad(search.current);
-    }
-  }, [setSearchOnLoad]);
-
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => (search.current = e.target.value);
+  const onKeyUp = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      const value = e.currentTarget.value;
+      if (e.code === 'Enter' && value) {
+        dispatch(setSearch(value));
+        trigger(value);
+      }
+    },
+    [dispatch, trigger]
+  );
 
   return (
     <div className={cl['search-bar']} data-testid={TestIds.SEARCH_BAR_ID}>
       <button className={cl.btn} />
       <input
         data-testid={TestIds.SEARCH_INPUT_ID}
-        defaultValue={search.current}
+        defaultValue={search}
         onKeyUp={onKeyUp}
-        onChange={onChange}
         className={cl.input}
         type="search"
         name="search-bar"

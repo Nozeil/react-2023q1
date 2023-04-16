@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FormCardI, FormCardsData, FormValuesI } from './Form.types';
+import { FormCardI, FormValuesI } from './Form.types';
 import cl from './Form.module.css';
 import FormCardList from './FormCardList/FormCardList';
 import FormInput from './FormInput/FormInput';
@@ -19,10 +19,13 @@ import {
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { TestIds } from './Form.enums';
 import differenceInYears from 'date-fns/differenceInYears';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { addCard, selectCards } from '@/redux/formCardsSlice';
 
 const Form = () => {
   const [message, setMessageVisibility] = useState<boolean>(false);
-  const [data, setData] = useState<FormCardsData>([]);
+  const cards = useAppSelector(selectCards);
+  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -59,12 +62,12 @@ const Form = () => {
             date,
             country,
             gender: gender ? Gendors.female : Gendors.male,
-            file,
+            file: URL.createObjectURL(file),
           },
           id: Date.now(),
         };
         setMessageVisibility(true);
-        setData((prevData) => [...prevData, cardsData]);
+        dispatch(addCard(cardsData));
       }
     }
   };
@@ -170,7 +173,7 @@ const Form = () => {
         <FormSuccessMessage isSuccessMessage={message} cl={cl} onTransitionEnd={onTransitionEnd} />
       </form>
 
-      <FormCardList cards={data} />
+      <FormCardList cards={cards} />
     </>
   );
 };

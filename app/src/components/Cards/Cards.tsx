@@ -1,28 +1,29 @@
 import { Card } from '../Card/Card';
 import cl from './Cards.module.css';
 import { TestIds } from '@/enums';
-import { useSearchBookQuery } from '@/hooks/useSearchBookQuery';
 import { SearchResponse } from '@/models';
 import { Loader } from '../Loader';
 import { adaptBook } from '@/utils';
 import { VPNMessage } from '../Messages/VPN';
 import { NoResultsMessage } from '../Messages/NoResults';
-
-interface Props {
-  search: string;
-}
+import { useSearchBooksQuery } from '@/services/books';
+import { useAppSelector } from '@/redux/hooks';
+import { ErrorMessage } from '../Messages/Error';
 
 function mapBooksItems(books: SearchResponse) {
   return books.items ? books.items.map((item) => adaptBook(item)) : [];
 }
 
-export function Cards({ search }: Props) {
-  const { data: books, isLoading, isError } = useSearchBookQuery(search);
+export function Cards() {
+  const { value, initialValue } = useAppSelector((state) => state.search);
+  const { data: books, isFetching, isError } = useSearchBooksQuery(value || initialValue);
 
   let content;
 
-  if (isLoading) {
+  if (isFetching) {
     content = <Loader />;
+  } else if (isError) {
+    content = <ErrorMessage />;
   } else if (books) {
     if (!('items' in books)) {
       return <VPNMessage />;
@@ -43,8 +44,6 @@ export function Cards({ search }: Props) {
     ) : (
       <NoResultsMessage />
     );
-  } else if (isError) {
-    content = <div className={cl.message}>Oops... something went wrong</div>;
   }
 
   return content || null;
