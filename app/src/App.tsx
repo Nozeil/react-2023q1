@@ -9,7 +9,7 @@ import './App.css';
 import Form from './components/Form/Form';
 
 interface Props {
-  isStatic: boolean;
+  isStatic?: boolean;
 }
 
 export function App({ isStatic }: Props) {
@@ -21,7 +21,7 @@ export function App({ isStatic }: Props) {
         <Route path={Paths.FORM} element={<Form />} />
         <Route path={Paths.NOT_FOUND} element={<NotFound />} />
       </Route>
-      {!isStatic && <Route path="*" element={<Navigate to={Paths.NOT_FOUND} />} />}
+      {!isStatic && <Route path="*" element={<Navigate to={Paths.NOT_FOUND} replace />} />}
     </Routes>
   );
 }

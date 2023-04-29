@@ -1,4 +1,5 @@
-import { store } from './store';
+import { initializeStore, reducer } from './store';
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof reducer>;
+export type Store = ReturnType<typeof initializeStore>;
+export type AppDispatch = Store['dispatch'];
