@@ -15,4 +15,5 @@ export enum TestIds {
   CARD_ID = 'card',
   CARDS_LIST_ID = 'cards-list',
   LOADER = 'loader',
+  MODAL = 'modal',
 }

@@ -4,6 +4,7 @@ import { adaptBook } from '@/utils';
 import { BookThumbnail } from '../BookThumbnail';
 import { ErrorMessage } from '../Messages/Error';
 import { useGetSpecificBookQuery } from '@/services/books';
+import { TestIds } from '@/enums';
 
 interface Props {
   id: string;
@@ -43,7 +44,7 @@ export function Modal({ id, closeModal }: Props) {
   }
 
   return (
-    <div className={cl.modal}>
+    <div className={cl.modal} data-testid={TestIds.MODAL}>
       <div className={cl['modal-wrapper']}>
         {content}
         <button className={cl.button} onClick={closeModal} />

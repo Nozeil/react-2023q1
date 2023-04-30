@@ -1,3 +1,6 @@
+import { PreloadedState } from '@reduxjs/toolkit';
+import { RootState } from './redux/types';
+
 export interface ImageLinks {
   smallThumbnail?: string;
   thumbnail?: string;

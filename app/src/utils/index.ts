@@ -1,5 +1,5 @@
-import { BookResponse } from '@/models';
-import { ImageLinks } from '@/types';
+import type { BookResponse } from '@/models';
+import type { ImageLinks } from '@/types';
 
 export function createNewImgLinks(links: ImageLinks) {
   const thumbnailLink = '/svg/question.svg';
